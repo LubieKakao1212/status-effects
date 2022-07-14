@@ -50,6 +50,7 @@ public class StatusEffectInstance {
         this.effect = effect;
         this.tag = initTag;
         this.time = time;
+        this.intensity = intensity;
     }
 
     public CompoundTag getTag() {
@@ -76,6 +77,10 @@ public class StatusEffectInstance {
 
     public void setIntensity(float intensity) {
         this.intensity = intensity;
+    }
+
+    public StatusEffectInstance copy() {
+        return new StatusEffectInstance(effect, tag.copy(), intensity, time);
     }
 
 }

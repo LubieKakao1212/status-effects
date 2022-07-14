@@ -17,13 +17,21 @@ public abstract class StatusEffect extends ForgeRegistryEntry<StatusEffect> {
     }
 
     /**
-     *
-     * @param target
-     * @param instance
      * @return true if effect should continue
      */
     public boolean tick(LivingEntity target, StatusEffectInstance instance) {
         return instance.tickDown() > 0;
+    }
+
+    /**
+     * @return true if effect should continue
+     */
+    public boolean start(LivingEntity target, StatusEffectInstance instance) {
+        return true;
+    }
+
+    public void end(LivingEntity target, StatusEffectInstance instance) {
+
     }
 
     public int getDefaultTime() {
@@ -33,4 +41,5 @@ public abstract class StatusEffect extends ForgeRegistryEntry<StatusEffect> {
     public float getDefaultIntensity() {
         return defaultIntensity;
     }
+
 }

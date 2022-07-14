@@ -4,6 +4,7 @@ import com.LubieKakao1212.seffects.StatusEffectsMod;
 import com.LubieKakao1212.seffects.capability.IStatusEffectHandler;
 import com.LubieKakao1212.seffects.effect.StatusEffect;
 import com.LubieKakao1212.seffects.effect.effects.DebugEffect;
+import com.LubieKakao1212.seffects.effect.effects.ModifierEffect;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -29,7 +30,8 @@ public class Register {
         EFFECTS_REGISTRY_GETTER = STATUS_EFFECTS.makeRegistry(StatusEffect.class, () -> { return new RegistryBuilder<>(); });
 
         //STATUS_EFFECTS.register("pain_killer", () -> { return new StatusEffect(); });
-        STATUS_EFFECTS.register("debug", () -> { return new DebugEffect(); });
+        STATUS_EFFECTS.register(StatusEffects.DEBUG_KEY, () -> { return new DebugEffect(); });
+        STATUS_EFFECTS.register(StatusEffects.SPEED_KEY, () -> { return new ModifierEffect(); });
     }
 
     public static void register() {

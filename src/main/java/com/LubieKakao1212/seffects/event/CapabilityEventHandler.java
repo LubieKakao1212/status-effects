@@ -3,16 +3,14 @@ package com.LubieKakao1212.seffects.event;
 import com.LubieKakao1212.seffects.StatusEffectsMod;
 import com.LubieKakao1212.seffects.capability.StatusEffectHandler;
 import com.LubieKakao1212.seffects.capability.StatusEffectHandlerProvider;
-import com.LubieKakao1212.seffects.effect.StatusEffect;
 import com.LubieKakao1212.seffects.effect.StatusEffectInstance;
 import com.LubieKakao1212.seffects.registries.Register;
+import com.LubieKakao1212.seffects.registries.StatusEffects;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.PotionEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -38,9 +36,9 @@ public class CapabilityEventHandler {
 
     @SubscribeEvent
     public static void addedEffectEvent(PotionEvent.PotionAddedEvent event) {
-        event.getEntityLiving().getCapability(StatusEffectHandler.STATUS_EFFECT_HANDLER).ifPresent(
-                (handler) -> handler.AddEffect(new StatusEffectInstance(Register.getEffectRegistry().getValue(new ResourceLocation(StatusEffectsMod.MODID, "debug")), new CompoundTag(), 1, random.nextInt(8) * 8))
-        );
+        int time = random.nextInt(8) * 16;
+        StatusEffectHandler.AddEffectTo(event.getEntityLiving(), StatusEffects.speed(time, random.nextFloat()), false);
+        StatusEffectHandler.AddEffectTo(event.getEntityLiving(), StatusEffects.debug(time), false);
     }
 
     @SubscribeEvent

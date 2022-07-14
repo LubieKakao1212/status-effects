@@ -16,11 +16,22 @@ public class StatusEffectHandler implements IStatusEffectHandler, INBTSerializab
 
     public static final Capability<IStatusEffectHandler> STATUS_EFFECT_HANDLER = CapabilityManager.get(new CapabilityToken<>() {});
 
-    private List<StatusEffectInstance> effects = new ArrayList<>();
+    public static void AddEffectTo(LivingEntity entity, StatusEffectInstance effect) {
+        AddEffectTo(entity, effect, true);
+    }
 
-    private Map<StatusEffect, List<StatusEffectInstance>> effectsByType = new HashMap<>();
+    public static void AddEffectTo(LivingEntity entity, StatusEffectInstance effect, boolean copy) {
+        entity.getCapability(STATUS_EFFECT_HANDLER).ifPresent(
+                (handler) -> handler.AddEffect(copy ? effect.copy() : effect)
+        );
+    }
 
-    private LivingEntity parent;
+    private final List<StatusEffectInstance> effects = new ArrayList<>();
+    private final List<StatusEffectInstance> addedEffects = new ArrayList<>();
+
+    private final Map<StatusEffect, List<StatusEffectInstance>> effectsByType = new HashMap<>();
+
+    private final LivingEntity parent;
 
     public StatusEffectHandler(LivingEntity parent) {
         this.parent = parent;
@@ -28,7 +39,7 @@ public class StatusEffectHandler implements IStatusEffectHandler, INBTSerializab
 
     @Override
     public void AddEffect(StatusEffectInstance effectInstance) {
-        effects.add(effectInstance);
+        addedEffects.add(effectInstance);
     }
 
     @Override
@@ -43,12 +54,21 @@ public class StatusEffectHandler implements IStatusEffectHandler, INBTSerializab
 
     @Override
     public void tick() {
+
+        for (StatusEffectInstance effectInstance : addedEffects) {
+            effectInstance.getEffect().start(parent, effectInstance);
+            effects.add(effectInstance);
+        }
+
+        addedEffects.clear();
+
         Iterator<StatusEffectInstance> it = effects.iterator();
 
         while(it.hasNext()) {
             StatusEffectInstance effectInstance = it.next();
             if(!effectInstance.getEffect().tick(parent, effectInstance))
             {
+                effectInstance.getEffect().end(parent, effectInstance);
                 it.remove();
             }
         }
@@ -66,6 +86,9 @@ public class StatusEffectHandler implements IStatusEffectHandler, INBTSerializab
 
     @Override
     public void deserializeNBT(ListTag nbt) {
+        effects.clear();
+        effectsByType.clear();
+
         for(Tag tag : nbt) {
             CompoundTag compound = (CompoundTag) tag;
 
