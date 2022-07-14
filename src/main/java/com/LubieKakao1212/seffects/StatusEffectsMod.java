@@ -1,5 +1,6 @@
 package com.LubieKakao1212.seffects;
 
+import com.LubieKakao1212.seffects.registries.Register;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
@@ -22,8 +23,6 @@ public class StatusEffectsMod
     public static final Logger LOGGER = LogManager.getLogger();
 
     public StatusEffectsMod() {
-
-        // Register ourselves for server and other game events we are interested in
-        MinecraftForge.EVENT_BUS.register(this);
+        Register.register();
     }
 }

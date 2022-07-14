@@ -1,8 +1,13 @@
 package com.LubieKakao1212.seffects.registries;
 
 import com.LubieKakao1212.seffects.StatusEffectsMod;
+import com.LubieKakao1212.seffects.capability.IStatusEffectHandler;
 import com.LubieKakao1212.seffects.effect.StatusEffect;
+import com.LubieKakao1212.seffects.effect.effects.DebugEffect;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -11,6 +16,7 @@ import net.minecraftforge.registries.RegistryManager;
 
 import java.util.function.Supplier;
 
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Register {
 
     public static final ResourceLocation EFFECT_REGISTRY_ID = new ResourceLocation(StatusEffectsMod.MODID, "status_effects");
@@ -22,10 +28,11 @@ public class Register {
     static {
         EFFECTS_REGISTRY_GETTER = STATUS_EFFECTS.makeRegistry(StatusEffect.class, () -> { return new RegistryBuilder<>(); });
 
-        STATUS_EFFECTS.register("pain_killer", () -> { return new StatusEffect(); });
+        //STATUS_EFFECTS.register("pain_killer", () -> { return new StatusEffect(); });
+        STATUS_EFFECTS.register("debug", () -> { return new DebugEffect(); });
     }
 
-    public void register() {
+    public static void register() {
         STATUS_EFFECTS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
@@ -34,6 +41,11 @@ public class Register {
             EFFECTS_REGISTRY = EFFECTS_REGISTRY_GETTER.get();
         }
         return EFFECTS_REGISTRY;
+    }
+
+    @SubscribeEvent
+    public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.register(IStatusEffectHandler.class);
     }
 
 }
